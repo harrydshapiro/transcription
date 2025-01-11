@@ -1,12 +1,16 @@
 import { Router } from "express";
-import { playerRouter } from "./player";
-import { libraryRouter } from "./library";
 import { sseRouter } from "./sse";
+import { transcriptionService } from "../services/transcription/transcription.service";
 
 const router = Router();
 
-router.use("/player", playerRouter);
-router.use("/library", libraryRouter);
 router.use("/sse", sseRouter);
+
+router.get("/transcription/:transcriptFileName", async (req, res) => {
+  const transcription = await transcriptionService.getParsedTranscript(
+    req.params.transcriptFileName,
+  );
+  res.send(transcription);
+});
 
 export default router;
