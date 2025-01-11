@@ -1,67 +1,144 @@
-import { useCallback, useContext } from "react";
-import { PlayerContext } from "../../state/player.context";
-import PlayerController from "../../components/PlayerController/PlayerController";
-import {
-  addAlbumToQueue,
-  nextTrack,
-  pausePlayback,
-  playPlayback,
-  previousTrack,
-} from "../../api/client";
-import { LibraryContext } from "../../state/library.context";
-import { Library } from "../../components/Library/Library";
-import { AlbumId } from "@record-collection/server/src/types/api-contract";
-import { Queue } from "../../components/Queue/Queue";
+import { useEffect, useState } from "react";
+import { getTranscript } from "../../api/client";
 import styles from "./Home.module.scss";
+import { ParsedTranscript, SpeakerId } from "@record-collection/server";
+
+type SpeakerColors = Record<SpeakerId, string>;
+
+const COLORS = [
+  "red",
+  "lime",
+  "blue",
+  "cyan",
+  "magenta",
+  "green",
+  "maroon",
+  "olive",
+  "purple",
+  "teal",
+  "navy",
+  "aqua",
+  "fuchsia",
+  "orange",
+  "aliceblue",
+  "antiquewhite",
+  "aquamarine",
+  "azure",
+  "beige",
+  "bisque",
+  "blanchedalmond",
+  "blueviolet",
+  "brown",
+  "burlywood",
+  "cadetblue",
+  "chartreuse",
+  "chocolate",
+  "coral",
+  "cornflowerblue",
+  "cornsilk",
+  "crimson",
+  "darkblue",
+  "darkcyan",
+  "darkgoldenrod",
+  "darkgray",
+  "darkgreen",
+  "darkkhaki",
+  "darkmagenta",
+  "darkolivegreen",
+  "darkorange",
+  "darkorchid",
+  "darkred",
+  "darksalmon",
+  "darkseagreen",
+  "darkslateblue",
+  "darkslategray",
+  "darkturquoise",
+  "darkviolet",
+  "deeppink",
+  "deepskyblue",
+  "dimgray",
+  "dodgerblue",
+  "firebrick",
+  "forestgreen",
+  "gainsboro",
+  "gold",
+  "goldenrod",
+  "greenyellow",
+  "honeydew",
+  "hotpink",
+  "indianred",
+  "indigo",
+  "ivory",
+  "khaki",
+  "lavender",
+  "lavenderblush",
+  "lawngreen",
+  "lemonchiffon",
+  "lightblue",
+  "lightcoral",
+  "lightcyan",
+  "lightgoldenrodyellow",
+  "lightgray",
+  "lightgreen",
+  "lightpink",
+  "lightsalmon",
+  "lightseagreen",
+  "lightskyblue",
+  "lightslategray",
+  "lightsteelblue",
+  "lightyellow",
+  "limegreen",
+  "linen",
+  "mediumaquamarine",
+  "mediumblue",
+  "mediumorchid",
+  "mediumpurple",
+  "mediumseagreen",
+  "mediumslateblue",
+  "mediumspringgreen",
+  "mediumturquoise",
+  "mediumvioletred",
+  "midnightblue",
+  "mintcream",
+  "mistyrose",
+  "moccasin",
+];
 
 export function HomePage() {
-  const playerContext = useContext(PlayerContext);
-  const libraryContext = useContext(LibraryContext);
+  const [parsedTranscript, setParsedTranscript] =
+    useState<null | ParsedTranscript>(null);
+  const [speakerColors, setSpeakerColors] = useState<SpeakerColors>({});
 
-  const currentSong = playerContext.player.currentSong;
-  const { album, albumArtist, title, id: songId } = currentSong || {};
+  useEffect(() => {
+    void getTranscript("egg.txt").then(setParsedTranscript);
+  }, []);
 
-  // TODO: This should be abstracted... somewhere. Somehow. Search for selector-esque patterns for context
-  // Should one context even know about the other? Might be an antipattern
-  const getAlbum = useCallback(
-    ({ albumName, artistName }: { albumName: string; artistName: string }) => {
-      return libraryContext.albums.find(
-        (a) => a.albumArtist === artistName && a.albumName === albumName,
-      );
-    },
-    [libraryContext, album, albumArtist],
-  );
-
-  const currentAlbum =
-    album && albumArtist
-      ? getAlbum({ albumName: album, artistName: albumArtist })
-      : undefined;
+  useEffect(() => {
+    const newSpeakerColors: SpeakerColors = {};
+    if (!parsedTranscript?.speakers) {
+      setSpeakerColors(newSpeakerColors);
+      return;
+    }
+    const speakerIds = Object.keys(parsedTranscript.speakers);
+    for (let i = 0; i < speakerIds.length; i++) {
+      const speakerId = speakerIds[i];
+      newSpeakerColors[speakerId] = COLORS[i];
+    }
+    setSpeakerColors(newSpeakerColors);
+  }, [parsedTranscript]);
 
   return (
     <div className={styles.homeContainer}>
-      <div className={styles.leftBar}>
-        <Library
-          albums={libraryContext.albums}
-          onAlbumSelect={(albumId: AlbumId) => addAlbumToQueue(albumId)}
-        />
-      </div>
-      <div className={styles.rightBar}>
-        <div className={styles.playerContainerWrapper}>
-          <PlayerController
-            albumName={album}
-            artistName={albumArtist}
-            trackName={title}
-            songId={songId}
-            albumCoverArtUrl={currentAlbum?.albumCoverArtUrl}
-            isPlaying={playerContext.player.status.state === "play"}
-            onPlay={playPlayback}
-            onPause={pausePlayback}
-            onNext={nextTrack}
-            onPrevious={previousTrack}
-          />
-        </div>
-        <Queue currentQueue={playerContext.queue} />
-      </div>
+      {parsedTranscript?.transcript.map((transcriptItem) => {
+        return (
+          <>
+            <span style={{ color: speakerColors[transcriptItem.speakerId] }}>
+              {transcriptItem.text}
+            </span>
+            &nbsp; &nbsp;
+          </>
+        );
+      })}
     </div>
   );
 }
