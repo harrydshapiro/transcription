@@ -1,6 +1,7 @@
 import { createReadStream } from "fs";
 import { ParsedTranscript, RawTranscript } from "./types";
 import path from "path";
+import { readdir } from "fs/promises";
 
 // Detects `[HH:MM:SS]` timestamps
 const timestampRegex = /\[\d{2}:\d{2}:\d{2}\]/;
@@ -15,6 +16,11 @@ class _TranscriptionService {
   async getParsedTranscript(fileName: string): Promise<ParsedTranscript> {
     const rawTranscript = await this.getRawTranscript(fileName);
     return this.mapRawToParsedTranscript(rawTranscript);
+  }
+
+  async getTranscriptFileNames() {
+    const files = await readdir(this.TRANSCRIPT_DIR);
+    return files;
   }
 
   async getRawTranscript(fileName: string): Promise<RawTranscript> {

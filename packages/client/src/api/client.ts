@@ -7,8 +7,13 @@ export const getTranscript = async (
   fileName: string,
 ): Promise<ParsedTranscript> => {
   const response = await client.get<ParsedTranscript>(
-    `transcription/${fileName}`,
+    `transcripts/${fileName}`,
   );
+  return response.data;
+};
+
+export const getTranscriptFileNames = async () => {
+  const response = await client.get<string[]>(`transcripts/`);
   return response.data;
 };
 

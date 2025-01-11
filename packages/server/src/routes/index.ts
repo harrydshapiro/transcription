@@ -6,11 +6,15 @@ const router = Router();
 
 router.use("/sse", sseRouter);
 
-router.get("/transcription/:transcriptFileName", async (req, res) => {
+router.get("/transcripts/:transcriptFileName", async (req, res) => {
   const transcription = await transcriptionService.getParsedTranscript(
     req.params.transcriptFileName,
   );
   res.send(transcription);
+});
+
+router.get("/transcripts", async (req, res) => {
+  res.send(await transcriptionService.getTranscriptFileNames());
 });
 
 export default router;
