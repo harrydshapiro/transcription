@@ -1,0 +1,11 @@
+.libraryContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    > .albumCoverWrapper {
+        margin-bottom: 20px;
+        width: calc(50% - 10px);
+    }
+}

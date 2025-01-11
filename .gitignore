@@ -1,0 +1,7 @@
+node_modules/
+*.log
+.env
+send-message.curl
+**/library-cache.json
+.DS_Store
+test-music-lib/
