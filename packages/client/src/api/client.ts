@@ -3,6 +3,8 @@ import { ParsedTranscript } from "@transcription/server";
 
 const client = axios.create({ baseURL: process.env.REACT_APP_BACKEND_URL });
 
+console.log('process.env.REACT_APP_BACKEND_URL', process.env.REACT_APP_BACKEND_URL)
+
 export const getTranscript = async (
   fileName: string,
 ): Promise<ParsedTranscript> => {
