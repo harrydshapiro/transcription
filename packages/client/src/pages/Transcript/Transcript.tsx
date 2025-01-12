@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTranscript } from "../../api/client";
 import styles from "./Transcript.module.scss";
-import { ParsedTranscript, SpeakerId } from "@record-collection/server";
+import { ParsedTranscript, SpeakerId } from "@transcription/server";
 import { useParams } from "react-router-dom";
 
 type SpeakerColors = Record<SpeakerId, string>;

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ParsedTranscript } from "@record-collection/server";
+import { ParsedTranscript } from "@transcription/server";
 
 const client = axios.create({ baseURL: process.env.REACT_APP_BACKEND_URL });
 

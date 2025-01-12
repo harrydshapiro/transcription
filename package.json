@@ -1,13 +1,13 @@
 {
     "private": true,
-    "name": "record-collection",
+    "name": "transcription",
     "workspaces": [
         "packages/**"
     ],
     "scripts": {
         "heroku-postinstall": "yarn build",
-        "build": "yarn workspace @record-collection/client build && yarn workspace @record-collection/server build",
-        "start": "yarn workspace @record-collection/server start"
+        "build": "yarn workspace @transcription/client build && yarn workspace @transcription/server build",
+        "start": "yarn workspace @transcription/server start"
     },
     "dependencies": {
         "concurrently": "^7.6.0",

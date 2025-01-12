@@ -1,9 +1,9 @@
 {
-  "name": "@record-collection/client",
+  "name": "@transcription/client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@record-collection/server": "1.0.0",
+    "@transcription/server": "1.0.0",
     "@reduxjs/toolkit": "^1.9.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
