@@ -3,6 +3,7 @@ import { getTranscript } from "../../api/client";
 import styles from "./Transcript.module.scss";
 import { ParsedTranscript, SpeakerId } from "@transcription/server";
 import { useParams } from "react-router-dom";
+import clsx from "clsx";
 
 type SpeakerColors = Record<SpeakerId, string>;
 
@@ -102,10 +103,15 @@ const COLORS = [
   "moccasin",
 ];
 
+type TranscriptionVisbilityConfig = Record<SpeakerId, { visible: boolean }>;
+
 export function Transcript() {
   const [parsedTranscript, setParsedTranscript] =
     useState<null | ParsedTranscript>(null);
   const [speakerColors, setSpeakerColors] = useState<SpeakerColors>({});
+
+  const [transcriptionVisibilityConfig, setTranscriptionVisibilityConfig] =
+    useState<TranscriptionVisbilityConfig>({});
 
   const { transcriptFileName } = useParams<{ transcriptFileName: string }>();
 
@@ -130,12 +136,65 @@ export function Transcript() {
     setSpeakerColors(newSpeakerColors);
   }, [parsedTranscript]);
 
+  useEffect(() => {
+    if (!parsedTranscript) {
+      setTranscriptionVisibilityConfig({});
+      return;
+    }
+
+    setTranscriptionVisibilityConfig(
+      Object.keys(
+        parsedTranscript.speakers,
+      ).reduce<TranscriptionVisbilityConfig>((acc, curr) => {
+        acc[curr] = { visible: true };
+        return acc;
+      }, {}),
+    );
+  }, [parsedTranscript]);
+
+  const speakerNameClickHandler = (speakerId: SpeakerId) => {
+    setTranscriptionVisibilityConfig({
+      ...transcriptionVisibilityConfig,
+      [speakerId]: {
+        visible: !transcriptionVisibilityConfig[speakerId].visible,
+      },
+    });
+  };
+
   return (
-    <div className={styles.homeContainer}>
+    <div className={styles.transcriptContainer}>
+      <div className={styles.speakerLegend}>
+        {Object.values(parsedTranscript?.speakers || {}).map(({ name, id }) => (
+          <>
+            <span
+              style={{ color: speakerColors[id] }}
+              className={clsx({
+                [styles.legendItem]: true,
+                [styles.selected]: transcriptionVisibilityConfig[id]?.visible,
+              })}
+              onClick={() => speakerNameClickHandler(id)}
+            >
+              {name}
+            </span>
+            &nbsp; &nbsp;
+          </>
+        ))}
+      </div>
+
       {parsedTranscript?.transcript.map((transcriptItem) => {
         return (
           <>
-            <span style={{ color: speakerColors[transcriptItem.speakerId] }}>
+            <span
+              style={{
+                color: speakerColors[transcriptItem.speakerId],
+              }}
+              className={clsx({
+                [styles.transcriptionItem]: true,
+                [styles.visible]:
+                  transcriptionVisibilityConfig[transcriptItem.speakerId]
+                    ?.visible,
+              })}
+            >
               {transcriptItem.text}
             </span>
             &nbsp; &nbsp;

@@ -1,0 +1,37 @@
+.transcriptContainer {
+    box-sizing: border-box;
+    padding-top: 45px;
+}
+
+.speakerLegend {
+    display: flex;
+    width: fit-content;
+    position: fixed;
+    top: 10px;
+    left: 50vw;
+    transform: translateX(-50%);
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.809);
+    box-sizing: border-box;
+    padding: 10px 20px;
+
+    .legendItem {
+        white-space: nowrap;
+        opacity: 0.25;
+        transition: 0.75s;
+        &:hover {
+            cursor: pointer;
+        }
+        &.selected {
+            opacity: 1;
+        }
+    }
+}
+
+.transcriptionItem {
+    transition: 0.75s;
+    opacity: 0;
+    &.visible {
+        opacity: 1;
+    }
+}
