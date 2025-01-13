@@ -7,6 +7,13 @@ import { useParams } from "react-router-dom";
 type SpeakerColors = Record<SpeakerId, string>;
 
 const COLORS = [
+  "#a93400",
+  "#ebd999",
+  "#505423",
+  "#003e83",
+  "#b68400",
+  "#1b8e13",
+  "#ffe600",
   "red",
   "lime",
   "blue",
