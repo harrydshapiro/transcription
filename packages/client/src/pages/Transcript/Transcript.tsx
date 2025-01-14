@@ -166,7 +166,7 @@ export function Transcript() {
           // eslint-disable-next-line no-debugger
           debugger;
           newConfig[speakerId] = {
-            visible: Math.random() > 0.5,
+            visible: Math.random() > 0.66,
           };
         }
 
