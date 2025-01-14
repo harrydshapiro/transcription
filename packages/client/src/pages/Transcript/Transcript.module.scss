@@ -14,11 +14,15 @@
     background-color: rgba(255, 255, 255, 0.809);
     box-sizing: border-box;
     padding: 10px 20px;
+    width: 90vw;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 
     .legendItem {
         white-space: nowrap;
         opacity: 0.25;
-        transition: 0.75s;
+        transition: 2.25s;
         &:hover {
             cursor: pointer;
         }
@@ -29,7 +33,7 @@
 }
 
 .transcriptionItem {
-    transition: 0.75s;
+    transition: 2.75s;
     opacity: 0;
     &.visible {
         opacity: 1;

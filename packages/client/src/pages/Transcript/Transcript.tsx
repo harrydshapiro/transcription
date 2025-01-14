@@ -152,6 +152,32 @@ export function Transcript() {
     );
   }, [parsedTranscript]);
 
+  useEffect(() => {
+    const intervalId = setInterval(
+      () => {
+        if (!parsedTranscript) return;
+
+        const speakerIds = Object.keys(parsedTranscript.speakers);
+        const newConfig = {
+          ...transcriptionVisibilityConfig,
+        };
+        for (let i = 0; i < speakerIds.length; i++) {
+          const speakerId = speakerIds[i];
+          // eslint-disable-next-line no-debugger
+          debugger;
+          newConfig[speakerId] = {
+            visible: Math.random() > 0.5,
+          };
+        }
+
+        setTranscriptionVisibilityConfig(newConfig);
+      },
+      Math.random() * (12000 - 2000) + 4000,
+    );
+
+    return () => clearInterval(intervalId);
+  }, [parsedTranscript, setTranscriptionVisibilityConfig]);
+
   const speakerNameClickHandler = (speakerId: SpeakerId) => {
     setTranscriptionVisibilityConfig({
       ...transcriptionVisibilityConfig,
